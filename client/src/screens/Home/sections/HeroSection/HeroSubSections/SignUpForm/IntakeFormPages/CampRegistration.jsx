@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { 
   TextField, Button, Stepper, Step, StepLabel, FormControl, 
   InputLabel, Select, MenuItem, FormControlLabel, Checkbox,
-  Typography, Box
+  Typography, Box, FormHelperText
 } from '@mui/material';
 import { formQuestions } from '../../../../../../../assets/formQuestions';
 
-export const RoboticsCampForm = () => {
+export const RegistrationForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({});
 
@@ -34,10 +34,12 @@ export const RoboticsCampForm = () => {
       case 'date':
         return (
           <TextField
+            key={field.name}
             fullWidth
             margin="normal"
             name={field.name}
-            label={field.label}
+            // label={field.label}
+            helperText={field.label}
             type={field.type}
             InputLabelProps={field.type === 'date' ? { shrink: true } : {}}
             onChange={handleInputChange}
@@ -47,6 +49,7 @@ export const RoboticsCampForm = () => {
       case 'textarea':
         return (
           <TextField
+            key={field.name}
             fullWidth
             margin="normal"
             name={field.name}
@@ -59,25 +62,26 @@ export const RoboticsCampForm = () => {
         );
       case 'select':
         return (
-          <FormControl fullWidth margin="normal">
-            <InputLabel>{field.label}</InputLabel>
-            <Select
-              name={field.name}
-              multiple={field.multiple}
-              onChange={handleInputChange}
-              value={formData[field.name] || (field.multiple ? [] : '')}
-            >
-              {field.options.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+   <FormControl key={field.name} fullWidth margin="normal">
+  <Select
+    name={field.name}
+    multiple={field.multiple}
+    onChange={handleInputChange}
+    value={formData[field.name] || (field.multiple ? [] : '')}
+  >
+    {field.options.map((option) => (
+      <MenuItem key={option.value} value={option.value}>
+        {option.label}
+      </MenuItem>
+    ))}
+  </Select>
+  {/* Add this line for helper text */}
+  <FormHelperText>{field.label}</FormHelperText>
+</FormControl>
         );
       case 'checkbox':
         return (
-          <Box>
+          <Box key={field.name}>
             <Typography variant="subtitle1">{field.label}</Typography>
             {field.options.map((option) => (
               <FormControlLabel
@@ -112,10 +116,10 @@ export const RoboticsCampForm = () => {
   return (
     <Box sx={{ width: '100%', maxWidth: 600, margin: 'auto', padding: 2 }}>
       <Typography variant="h4" align="center" gutterBottom>
-      Robotics Camp Registration Form
+        Register Here
       </Typography>
       <Stepper activeStep={activeStep}>
-        {formQuestions.map((section) => (
+        {formQuestions.map((section, index) => (
           <Step key={section.section}>
             <StepLabel>{section.section}</StepLabel>
           </Step>

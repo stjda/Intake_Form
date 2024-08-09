@@ -3,7 +3,7 @@ export const formQuestions = [
     {
       section: "Personal Information",
       fields: [
-        { name: "submissionDate", label: "Submission Date", type: "date" },
+        { name: "submissionDate", label: "Date", type: "date" },
         { name: "firstName", label: "First Name // Nombre", type: "text" },
         { name: "middleName", label: "Middle Name // Segundo nombre", type: "text" },
         { name: "lastName", label: "Last Name // Apellido", type: "text" },

@@ -8,7 +8,7 @@ export const ItemsWrapper = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate('/login');
+    navigate('/registration');
   };
 
   return (

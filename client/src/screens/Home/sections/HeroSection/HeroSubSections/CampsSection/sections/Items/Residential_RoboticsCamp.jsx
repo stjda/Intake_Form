@@ -8,7 +8,7 @@ export const Items = () => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate('/login');
+    navigate('/registration');
   };
 
   return (
@@ -55,6 +55,8 @@ export const Items = () => {
         text2="Robotics Camp"
         textClassName="text-content"
       />
+
+      
     </StyledItems>
   );
 };

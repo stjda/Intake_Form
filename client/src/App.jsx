@@ -6,7 +6,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@ap
 import { setContext } from '@apollo/client/link/context';
 // import { SignUpSection, Error401, Error409 } from './screens/Login';
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
-
+import { CampRegistrationPage } from './screens/Home/sections/Registration/CampRegistration';
 // Set up an Apollo client to point towards graphql backend
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/graphql', // GraphQL endpoint
@@ -57,6 +57,8 @@ function App() {
       <>
         {/* to-do finsih responsive styling for mobile/tablets */}
         <Route path="/" index element={<LandingPage />} />
+        {/* Registration route */}
+        <Route path="/registration" element={<CampRegistrationPage/>} />
           {/* to-do */}
           {/* to-do finsih responsive styling for mobile/tablets */}
           {/* <Route path="/login" element={<SignUpSection />} /> */}

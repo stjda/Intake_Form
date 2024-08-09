@@ -3,7 +3,6 @@ import { AboutUsSection } from "./sections/AboutUsSection";
 import { CtaFooterSection } from "./sections/CtaFooterSection";
 import { HeroSection } from "./sections/HeroSection/HeroSection";
 import styled from "styled-components";
-import { CampRegistrationAccordion } from './sections/HeroSection/sections/SignUpForm'
 
 const StyledLandingPage = styled.div`
   align-items: flex-start;
@@ -22,7 +21,6 @@ export const LandingPage = () => {
     <StyledLandingPage>
       <HeroSection />
       <AboutUsSection />
-      {/* <CampRegistrationAccordion /> */}
       <CtaFooterSection />
    </StyledLandingPage>
     </>

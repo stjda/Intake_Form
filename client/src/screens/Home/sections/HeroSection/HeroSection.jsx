@@ -1,8 +1,8 @@
 import React from "react";
-import { CampsSection } from "./sections/CampsSection/CampsSection";
-import { Navigation } from "./sections/Navigation";
-import { PhotoNumbers } from "./sections/PhotoNumbers";
-import { TitleTextsButton } from "./sections/TitleTextButtons";
+import { CampsSection } from "./HeroSubSections/CampsSection/CampsSection";
+import { Navigation } from "./HeroSubSections/Navigation";
+import { PhotoNumbers } from "./HeroSubSections/PhotoNumbers";
+import { TitleTextsButton } from "./HeroSubSections/TitleTextButtons";
 import styled from "styled-components";
 
 const StyledHeroSection = styled.div`
