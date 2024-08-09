@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { LandingPage } from './screens/Home/Landing';
-import { ProfileContainer } from './screens/PostAuthentication/ProfileContainer';
-import { ProfileRedirect, EditProfileRedirect, Logout } from './screens/Login/Redirects';
+// import { ProfileContainer } from './screens/PostAuthentication/ProfileContainer';
+// import { ProfileRedirect, EditProfileRedirect, Logout } from './screens/Login/Redirects';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { SignUpSection, Error401, Error409 } from './screens/Login';
+// import { SignUpSection, Error401, Error409 } from './screens/Login';
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 
 // Set up an Apollo client to point towards graphql backend
@@ -59,16 +59,16 @@ function App() {
         <Route path="/" index element={<LandingPage />} />
           {/* to-do */}
           {/* to-do finsih responsive styling for mobile/tablets */}
-          <Route path="/login" element={<SignUpSection />} />
+          {/* <Route path="/login" element={<SignUpSection />} /> */}
           {/* // redirections */}
-          <Route path="/profile" element={<ProfileRedirect />} />
-          <Route path="/edit/redirect" element={<EditProfileRedirect />} />
-          <Route path="/logout" element={<Logout />} />
+          {/* <Route path="/profile" element={<ProfileRedirect />} /> */}
+          {/* <Route path="/edit/redirect" element={<EditProfileRedirect />} /> */}
+          {/* <Route path="/logout" element={<Logout />} /> */}
           {/* Profile page Route */}
-          <Route path="/profile/authenticated" element={<ProfileContainer />} />
+          {/* <Route path="/profile/authenticated" element={<ProfileContainer />} /> */}
           {/* error pages */}
-          <Route path="/error=emailNotVerified" element={<Error401/>} />
-          <Route path="/error=Conflict" element={<Error409 />} />
+          {/* <Route path="/error=emailNotVerified" element={<Error401/>} /> */}
+          {/* <Route path="/error=Conflict" element={<Error409 />} /> */}
           {/* Reviews page Route */}
           {/* <Route path="/reviews" element={<ProtectedRoutes element={<Reviews />} />} /> */}
 

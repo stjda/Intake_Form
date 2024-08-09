@@ -18,6 +18,7 @@ const muiTheme = createTheme({
         html, body {
           margin: 0;
           height: 100%;
+          
         }
         button:focus-visible {
           outline: 2px solid #4a90e2 !important;
