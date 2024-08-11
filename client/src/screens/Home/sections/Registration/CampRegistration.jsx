@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
@@ -17,56 +17,74 @@ import {
   FormControl,
   FormLabel,
   Grid,
-  TextField
+  TextField,
+  List,
+  ListItem,
+  ListItemText, 
+  Alert,
+  Snackbar,
+  CircularProgress, 
+  Backdrop,
+  Modal
 } from '@mui/material';
+import { CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import confetti from 'canvas-confetti';
+import MuiAlert from '@mui/material/Alert';
 import styled from "styled-components";
-import { Button as MuiButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CtaFooterSection } from '../CtaFooterSection';
 import { Navigation } from '../HeroSection/HeroSubSections/Navigation';
 import { TitleTextsButton } from '../HeroSection/HeroSubSections/TitleTextButtons';
 import { CampRegistrationAccordion } from '../../sections/HeroSection/HeroSubSections/SignUpForm/index';
 import { Card } from '../../../../components/Card'
-// import { termsAndConditions } from '../../../../assets/terms';
+import { termsAndConditions } from '../../../../assets/templates/terms';
+import { campInfo } from '../../../../assets/templates/camps'
+import { DataSync } from '../../../../util/MinIO/ObjectStorage';
 
+
+import { openDB } from 'idb';
+export const DB_NAME = 'STJDA_SignUp';
+export const USER_STORE = 'userSignUps';
+
+export const openSTJDADB = async () => {
+  return openDB(DB_NAME, 1, {
+    upgrade(db) {
+      if (!db.objectStoreNames.contains(USER_STORE)) {
+        db.createObjectStore(USER_STORE, { keyPath: '_id', autoIncrement: true });
+      }
+    },
+  });
+};
 
 const steps = ['Personal Information', 'Camp Selection', 'Review & Submit'];
 
-const campInfo = [
-  {
-    name: 'Residential Camp',
-    description: 'Experience a full immersion in camp life with our residential program. Stay overnight, make new friends, and enjoy a wide range of activities.',
-  },
-  {
-    name: 'Science Camp',
-    description: 'Explore the wonders of science through hands-on experiments, exciting projects, and engaging lectures from expert instructors.',
-  },
-  {
-    name: 'Robotics Camp',
-    description: 'Build and program your own robots in this cutting-edge camp. Learn about engineering, coding, and artificial intelligence.',
-  },
-  {
-    name: 'Nature Camp',
-    description: 'Connect with the great outdoors in our nature camp. Learn about local ecosystems, wildlife, and conservation efforts.',
-  },
-];
-const termsAndConditions = [
-  {
-    english: "I/We hereby give my/our consent for my camper to attend and participate in all activities of Camp Freedom and hereby agree to hold harmless Camp Freedom and/ or its sponsors, its agents, servants or employees from any liability of whatsoever nature and injuries, sickness or other damages suffered by us or camper during his/her/their stay at Camp Freedom and by any act of omission of said organization, their agents, servants or employees.",
-    spanish: "Por la presente, doy mi consentimiento para que mi campista asista y participe en todas las actividades de Camp Freedom y por la presente acepto eximir de toda responsabilidad a Camp Freedom y/o a sus patrocinadores, agentes, sirveintes, y empleados de cualquier tipo de responsabilidad, lesiones, y enfermedad y otros daños sufridos por nosotros o campista durante su estancia en Camp Freedom y por cualquier acto de omisión de dicha organización, sus agentes, sirvientes y empleados."
-  },
-  {
-    english: "I/We authorize South Texas Juvenile Diabetes Association (STJDA) to use my child's photo/likeness to promote youth events, publicize the youth program, and/or fund-raise for South Texas Juvenile Diabetes Association.",
-    spanish: "Autorizo a la Asociación de Diabetes Juvenil del Sur de Texas (STJDA) a usar la foto/semejanza de mi hijo para promover eventos juveniles, divulgar el programa juvenil y/o recaudar fondos para la Asociación de Diabetes Juvenil del Sur de Texas."
-  },
-  // Add more terms here...
-];
 export const CampRegistrationPage = () => {
+
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const [selectedCamps, setSelectedCamps] = useState({});
-  const [email, setEmail] = useState('');
-  const [guardianName, setGuardianName] = useState('');
-  const [consent, setConsent] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [requestFailed, setRequestFailed] = useState(false);
+  const [disableCloseModaleButton, setDisableCloseModaleButton] = useState(true);
+  const [syncTime, setSyncTime]=useState('')
+
+  const [allFormData, setAllFormData] = useState({
+    selectedCamps: {},
+    email: '',
+    guardianName: '',
+    consent: false,
+    registrationFormData: {}
+  });
+
+  
+
+  useEffect(() => {
+    console.log('allFormData:', allFormData);
+  }, [allFormData]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -78,20 +96,102 @@ export const CampRegistrationPage = () => {
 
   const handleReset = () => {
     setActiveStep(0);
-    setSelectedCamps({});
-  };
-
-  const handleCampChange = (event) => {
-    setSelectedCamps({
-      ...selectedCamps,
-      [event.target.name]: event.target.checked,
+    setAllFormData({
+      selectedCamps: {},
+      email: '',
+      guardianName: '',
+      consent: false,
+      registrationFormData: {}
     });
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const db = await openSTJDADB();
+      const tx = db.transaction(USER_STORE, 'readwrite');
+      const store = tx.objectStore(USER_STORE);
+      
+      // Check if there's existing data
+      const existingData = await store.getAll();
+      if (existingData.length > 0) {
+        // If data exists, update the first entry
+        await store.put({ ...allFormData, _id: existingData[0]._id });
+      } else {
+        // If no data exists, add new entry
+        await store.add(allFormData);
+      }
+      await tx.done;
+
+      console.log("Successfully saved data to IndexedDB");
+      setSnackbarMessage("Registration saved successfully!");
+      setSnackbarOpen(true);
+
+      // Open the modal
+      setIsModalOpen(true);
+
+      // Throw confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      
+      // Wait for 2.75 seconds
+      await new Promise(resolve => setTimeout(resolve, 2750));
+      
+
+      setDisableCloseModaleButton(false)
+      
+    } catch (error) {
+      console.error("Error in handleSubmit:", error);
+      setSnackbarMessage("An error occurred while saving the registration. Please try again.");
+      setSnackbarOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Redirect to home page after closing the modal
+    navigate('/');
+  };
+
+  const handleCampChange = (event) => {
+    const { name, checked } = event.target;
+    setAllFormData(prevData => ({
+      ...prevData,
+      selectedCamps: {
+        ...prevData.selectedCamps,
+        [name]: checked,
+      }
+    }));
+  };
+
+  const getTime =() =>{
+    const currentTime = new Date().toLocaleString();
+    return currentTime;
+  }
+
   const getSelectedCampNames = () => {
-    return Object.entries(selectedCamps)
-      .filter(([_, isSelected]) => isSelected)
-      .map(([campName, _]) => campName);
+    return Object.entries(allFormData.selectedCamps)
+    .filter(([_, isSelected]) => isSelected)
+    .map(([campName, _]) => campName);
+  };
+
+  const updateAllFormData = (newData) => {
+    setAllFormData(prevData => ({
+      ...prevData,
+      ...newData
+    }));
   };
 
   return (
@@ -190,7 +290,7 @@ export const CampRegistrationPage = () => {
                 <Typography variant="h6" gutterBottom>
                   Please fill out your personal information.
                 </Typography>
-                <CampRegistrationAccordion />
+                <CampRegistrationAccordion onFormDataChange={(data) => setAllFormData(prev => ({ ...prev, registrationFormData: data }))}/>
               </Box>
             )}
             {activeStep === 1 && (
@@ -206,12 +306,13 @@ export const CampRegistrationPage = () => {
                         key={camp.name}
                         control={
                           <Checkbox
-                            checked={!!selectedCamps[camp.name]}
+                            checked={allFormData.selectedCamps[camp.name] || false}
                             onChange={handleCampChange}
                             name={camp.name}
                           />
                         }
-                        label={camp.name}
+                        disabled={camp.toggle}
+                        label={`${camp.name} ${camp.toggle ? ": full" : ''}`}
                       />
                     ))}
                   </FormGroup>
@@ -222,38 +323,57 @@ export const CampRegistrationPage = () => {
               <Box className="p-4">
               <Grid container spacing={4}>
                 <Grid item xs={12} md={6}>
-                  <Typography variant="h6" className="mb-4">
-                    Please review your information and submit.
+                  <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}>
+                    Please review your information and submit
                   </Typography>
-                  <Typography variant="subtitle1" className="mb-2">
-                    Selected Camps:
-                  </Typography>
-                  <ul>
-                    {getSelectedCampNames().map((campName) => (
-                      <li key={campName}>{campName}</li>
-                    ))}
-                  </ul>
-                  {getSelectedCampNames().length === 0 && (
-                    <Typography className="text-red-500">
+                  
+                  <Accordion >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+                        Your Information ({Object.keys(allFormData.registrationFormData).length})
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <List sx={{ bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
+                        {Object.entries(allFormData.registrationFormData).map(([key, value]) => (
+                          <ListItem key={key} divider>
+                            <ListItemText 
+                              primary={key}
+                              secondary={String(value)}
+                              primaryTypographyProps={{ fontWeight: 'medium' }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </AccordionDetails>
+                  </Accordion>
+                  
+                  {selectedCamps.length === 0 && (
+                    <Alert severity="error" sx={{ mt: 2 }}>
                       Please select at least one camp before proceeding.
-                    </Typography>
+                    </Alert>
                   )}
                 </Grid>
+
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
                     label="Email"
                     variant="outlined"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={allFormData.email}
+                    onChange={(e) => setAllFormData(prev => ({ ...prev, email: e.target.value }))}
                     className="mb-4"
                   />
                   <TextField
                     fullWidth
                     label="Legal Guardian Name"
                     variant="outlined"
-                    value={guardianName}
-                    onChange={(e) => setGuardianName(e.target.value)}
+                    value={allFormData.guardianName}
+                    onChange={(e) => setAllFormData(prev => ({ ...prev, guardianName: e.target.value }))}
                     className="mb-4"
                   />
                   <Box 
@@ -290,8 +410,8 @@ export const CampRegistrationPage = () => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={consent}
-                        onChange={(e) => setConsent(e.target.checked)}
+                      checked={allFormData.consent}
+                      onChange={(e) => setAllFormData(prev => ({ ...prev, consent: e.target.checked }))}
                       />
                     }
                     label="I agree to the terms and conditions"
@@ -299,14 +419,25 @@ export const CampRegistrationPage = () => {
                 </Grid>
               </Grid>
               <Button 
+              sx={{ mt: 2}}
                 variant="contained" 
                 color="primary" 
                 className="mt-4"
-                disabled={!email || !guardianName || !consent || getSelectedCampNames().length === 0}
-                // onClick={handleSubmit}
+                disabled={!allFormData.email || !allFormData.guardianName || !allFormData.consent || getSelectedCampNames().length === 0}
+                onClick={handleSubmit} // serialize the data and send to MinIO
               >
                 Submit
               </Button>
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              >
+                <MuiAlert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                  {snackbarMessage}
+                </MuiAlert>
+              </Snackbar>
             </Box>
             )}
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
@@ -321,10 +452,10 @@ export const CampRegistrationPage = () => {
               <Box sx={{ flex: '1 1 auto' }} />
               <Button 
                 onClick={handleNext}
-                disabled={activeStep === 1 && getSelectedCampNames().length === 0}
+                disabled={(activeStep === 1 || activeStep === steps.length - 1) && getSelectedCampNames().length === 0}
               >
                 {/* this is the outer next button */}
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                {activeStep === steps.length - 1 ? '' : 'Next'}
               </Button>
             </Box>
           </Box>
@@ -332,6 +463,66 @@ export const CampRegistrationPage = () => {
       </Paper>
     </Container>
     <CtaFooterSection/>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={isLoading}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
+    <Modal
+      open={isModalOpen}
+      onClose={handleCloseModal}
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
+    >
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        borderRadius: 2,
+        boxShadow: 24,
+        p: 4,
+      }}>
+        <Typography id="modal-title" variant="h5" component="h2" sx={{ mb: 2, display: 'flex', alignItems: 'center', color: 'success.main' }}>
+          <CheckCircle size={24} style={{ marginRight: '8px' }} />
+          Registration Submitted
+        </Typography>
+        <DataSync disableButton={setDisableCloseModaleButton} requestFailed={setRequestFailed} failedRequest={requestFailed}/>
+        <Box sx={{ mt: 2, mb: 3 }}>
+          {disableCloseModaleButton ? (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <CircularProgress size={20} sx={{ mr: 2 }} />
+              <Typography variant="body1">Syncing data... <CircularProgress/> </Typography>
+            </Box>
+          ) : requestFailed ? (
+            <Typography variant="body1" color="error">
+              Registration failed. Please try again.
+            </Typography>
+          ) : (
+            <>
+              <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                Last successful sync: {getTime()}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                STJDA will reach out to you soon to finalize your registration process.
+              </Typography>
+            </>
+          )}
+        </Box>
+        <Button 
+          onClick={handleCloseModal} 
+          variant="contained" 
+          color="primary" 
+          fullWidth
+          disabled={disableCloseModaleButton}
+        >
+          Close
+        </Button>
+      </Box>
+    </Modal>
     </>
   );
 };

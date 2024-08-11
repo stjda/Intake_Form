@@ -1,2 +1,2 @@
-export { RegistrationForm } from './CampRegistration'
+export { RegistrationForm } from './FormElements'
 

@@ -17,9 +17,6 @@
     "concurrently": "^5.1.0"
   },
   "dependencies": {
-    "@apollo/server": "^4.9.3",
-    "@apollo/usage-reporting-protobuf": "^4.1.1",
-    "@apollo/utils.fetcher": "^3.0.0",
     "@babel/preset-env": "^7.24.6",
     "@babel/runtime-corejs3": "^7.24.6",
     "if-env": "^1.0.4"
