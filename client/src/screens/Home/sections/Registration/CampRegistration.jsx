@@ -27,7 +27,7 @@ import {
   Backdrop,
   Modal
 } from '@mui/material';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import MuiAlert from '@mui/material/Alert';
@@ -68,7 +68,7 @@ export const CampRegistrationPage = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [requestFailed, setRequestFailed] = useState(false);
+  const [requestFailed, setRequestFailed] = useState(null);
   const [disableCloseModaleButton, setDisableCloseModaleButton] = useState(true);
   const [syncTime, setSyncTime]=useState('')
 
@@ -486,10 +486,17 @@ export const CampRegistrationPage = () => {
         boxShadow: 24,
         p: 4,
       }}>
-        <Typography id="modal-title" variant="h5" component="h2" sx={{ mb: 2, display: 'flex', alignItems: 'center', color: 'success.main' }}>
-          <CheckCircle size={24} style={{ marginRight: '8px' }} />
-          Registration Submitted
-        </Typography>
+        {requestFailed !== null && (requestFailed ? (
+          <Typography id="modal-title" variant="h5" component="h2" sx={{ mb: 2, display: 'flex', alignItems: 'center', color: 'red' }}>
+            <XCircle size={24} style={{ marginRight: '8px' }} />
+            Registration Failure
+          </Typography>
+        ) : (
+          <Typography id="modal-title" variant="h5" component="h2" sx={{ mb: 2, display: 'flex', alignItems: 'center', color: 'success.main' }}>
+            <CheckCircle size={24} style={{ marginRight: '8px' }} />
+            Registration Submitted
+          </Typography>
+        ))}
         <DataSync disableButton={setDisableCloseModaleButton} requestFailed={setRequestFailed} failedRequest={requestFailed}/>
         <Box sx={{ mt: 2, mb: 3 }}>
           {disableCloseModaleButton ? (

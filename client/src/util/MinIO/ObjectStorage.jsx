@@ -19,19 +19,21 @@ export const DataSync = ({ disableButton, requestFailed, failedRequest }) => {
 
       console.log("Data retrieved from IndexedDB:", allData);
 
-      const response = await axios.post('http://localhost:3000/api/minioP', allData);
+      const response = await axios.post('http://34.135.9.49:3000/api/minioP', allData);
       if (response.status === 200) {
         console.log("Data sent to MinIO successfully");
         setIsSyncing(false);
         disableButton(false);
-        // clear indexDB for STJDA_SignUp
-        const deleteRequest = indexedDB.deleteDatabase(DB_NAME)
-        deleteRequest.onerror = function(event) {
-          console.error("Error removing data.");
-        };
+        requestFailed(false);
       } else {
+        requestFailed(true);
         throw new Error("Failed to send data to MinIO");
       }
+      // clear indexDB for STJDA_SignUp
+      const deleteRequest = indexedDB.deleteDatabase(DB_NAME)
+      deleteRequest.onerror = function() {
+        console.error("Error removing data.");
+      };
 
     } catch (error) {
       console.error("Error syncing data:", error);

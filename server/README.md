@@ -30,7 +30,7 @@ Setup Docker on the VM in Google Cloud
   docker volume create minio-data
 
   docker run -p 9000:9000 -p 9001:9001 \
-    --network=minio-net \
+    --network=minio-net \   # create the network
     --name minio1 \
     -e "MINIO_ROOT_USER=minioadmin" \
     -e "MINIO_ROOT_PASSWORD=minioadmin" \
@@ -46,9 +46,37 @@ Setup Docker on the VM in Google Cloud
     docker logs minio1
   ```
 
-  - Access the web interface for the MinIO Database via: http://<VM_EXTERNAL_IP>:9001
+* To rebuild, and restart MinIO with dynamic logging
+  ```bash
+#### Stop the running container
+docker stop minio1
 
-  # Containerize the Express server to run in the cloud with Docker
+#### Remove the container
+docker rm minio1
+
+#### Remove the image (optional, as it's an official image)
+docker rmi minio/minio
+
+#### Pull the latest image (since we're not building it locally)
+docker pull minio/minio
+
+#### Run the container again with the same settings as before
+docker run -p 9000:9000 -p 9001:9001 \
+  --network=minio-net \
+  --name minio1 \
+  -e "MINIO_ROOT_USER=minioadmin" \
+  -e "MINIO_ROOT_PASSWORD=minioadmin" \
+  -v minio-data:/data \
+  --restart always \
+  -d minio/minio server /data --console-address ":9001"
+
+#### View the logs
+docker logs -f minio1
+
+
+- Access the web interface for the MinIO Database via: http://<VM_EXTERNAL_IP>:9001
+
+# Containerize the Express server to run in the cloud with Docker
 ##### Dockerize the custom server:
 - Use the official Node.js 14 image as a parent image
 FROM node:14
@@ -72,26 +100,61 @@ EXPOSE 3000
 CMD ["npm", "start"]
 
 #### Navigate to the directory containing your Dockerfile and build it, then the Docker Container
+
+#### Build for multiple archtectures
+- Use buildx to manage varying architectures:
+docker buildx create --name mybuilder --use
+docker buildx inspect --bootstrap
+
+- build the express-server for both arm64 and amd64 - this will replace existing images pushed to dockerhub
+docker buildx build --platform linux/amd64,linux/arm64 -t gbeals1/api-servers:ExpressApi-v1.0 --push .
+
 ```bash
+docker build -t my-express-app . # build the express api server
+
+# Push the server image to your dockerhub
+- docker login 
+- docker tag my-express-app gbeals1/api-servers:ExpressApi-v1.0
+- docker push gbeals1/api-servers:ExpressApi-v1.0
+# Specify the platform type since we used buildx to build for multiple platforms
+docker run -d --name my-express-server \
+  -p 3000:3000 \
+  --platform linux/amd64 \  
+  --network minio-net \
+  -e PORT=3000 \
+  -e NODE_ENV=development \
+  -e ENDPOINT=http://34.135.9.49:9000 \
+  -e ACCESS_KEY_ID=minioadmin \
+  -e SECRET_ACCESS_KEY=minioadmin \
+  gbeals1/api-servers:ExpressApi-v1.0
+```
+# Stop cleanup and restart
+#### Stop the running container
+docker stop my-express-server
+
+#### Remove the container
+docker rm my-express-server
+
+#### Remove the image
+docker rmi my-express-app
+
+#### Rebuild the image
 docker build -t my-express-app .
 
-docker run -p 3000:3000 \
-  --network=minio-net \
-  --name my-express-server \
-  -e MINIO_ROOT_USER='minioadmin' \
-  -e MINIO_ROOT_PASSWORD='minioadmin' \
-  -e MINIO_ENDPOINT='http://minio1:9000' \  # Using Docker DNS as they're on the same network
-  -d my-express-app
-```
-* Configure Environment Variables: 
-```javascript
-  const s3Client = new S3Client({
-    endpoint: process.env.MINIO_ENDPOINT,  // Now pulled from environment variables
-    region: "us-east-1",
-    credentials: {
-      accessKeyId: process.env.MINIO_ROOT_USER,
-      secretAccessKey: process.env.MINIO_ROOT_PASSWORD
-    },
-    forcePathStyle: true,
-  });
-```
+#### Run the container again with the same settings as before
+docker run -d --name my-express-server \
+  -p 3000:3000 \
+  --platform linux/amd64 \  
+  --network minio-net \
+  -e PORT=3000 \
+  -e NODE_ENV=development \
+  -e ENDPOINT=http://34.135.9.49:9000 \
+  -e ACCESS_KEY_ID=minioadmin \
+  -e SECRET_ACCESS_KEY=minioadmin \
+  gbeals1/api-servers:ExpressApi-v1.0
+
+#### View the logs
+docker logs -f my-express-server
+
+
+
