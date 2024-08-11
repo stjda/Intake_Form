@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
 import { CssBaseline } from '@mui/material'
+
 // import { StoreProvider } from './util/Models/Stores/index.js';
 // Create a custom theme with global styles
 const muiTheme = createTheme({
