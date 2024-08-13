@@ -1,40 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { config } = require('dotenv');
-
+const { s3Client } = require('../../s3');
 config({ path: '../../.env' });
-const { PutObjectCommand, S3Client,  ListBucketsCommand } = require("@aws-sdk/client-s3");
-
-// MinIO client configuration
-const s3Client = new S3Client({
-  endpoint: process.env.ENDPOINT, 
-  region: "us-east-1", 
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY_ID, 
-    secretAccessKey: process.env.SECRET_ACCESS_KEY, 
-  },
-  forcePathStyle: true, // Important for MinIO compatibility
-});
+const { PutObjectCommand,  ListBucketsCommand } = require("@aws-sdk/client-s3");
   
-
-// Function to remove the lock from an object
-async function removeObjectLock(bucketName, objectName) {
+async function listBuckets() {
   try {
-      // Get object lock configuration
-      const lockConfig = await minioClient.getObjectLockConfig(bucketName);
-      console.log("Current Lock Configuration:", lockConfig);
-
-      // Remove object lock if it exists
-      if (lockConfig && lockConfig.mode) {
-          await minioClient.setObjectLockConfig(bucketName, '');
-          console.log(`Lock removed from bucket ${bucketName}`);
-      }
-
-      // Your code to delete the object
-      await minioClient.removeObject(bucketName, objectName);
-      console.log(`Object ${objectName} deleted successfully.`);
-  } catch (error) {
-      console.error("Failed to remove object lock or delete object:", error);
+      const { Buckets } = await s3Client.send(new ListBucketsCommand({}));
+      console.log('Success', Buckets);
+  } catch (err) {
+      console.error('Error', err);
   }
 }
 

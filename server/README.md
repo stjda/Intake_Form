@@ -107,15 +107,15 @@ docker buildx create --name mybuilder --use
 docker buildx inspect --bootstrap
 
 - build the express-server for both arm64 and amd64 - this will replace existing images pushed to dockerhub
-docker buildx build --platform linux/amd64,linux/arm64 -t gbeals1/api-servers:ExpressApi-v1.0 --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t gbeals1/api-servers:ExpressApi-v1.1 --push .
 
 ```bash
 docker build -t my-express-app . # build the express api server
 
 # Push the server image to your dockerhub
 - docker login 
-- docker tag my-express-app gbeals1/api-servers:ExpressApi-v1.0
-- docker push gbeals1/api-servers:ExpressApi-v1.0
+- docker tag my-express-app gbeals1/api-servers:ExpressApi-v1.1
+- docker push gbeals1/api-servers:ExpressApi-v1.1
 # Specify the platform type since we used buildx to build for multiple platforms
 docker run -d --name my-express-server \
   -p 3000:3000 \
@@ -126,7 +126,7 @@ docker run -d --name my-express-server \
   -e ENDPOINT=http://34.135.9.49:9000 \
   -e ACCESS_KEY_ID=minioadmin \
   -e SECRET_ACCESS_KEY=minioadmin \
-  gbeals1/api-servers:ExpressApi-v1.0
+  gbeals1/api-servers:ExpressApi-v1.1
 ```
 # Stop cleanup and restart
 #### Stop the running container
@@ -141,17 +141,26 @@ docker rmi my-express-app
 #### Rebuild the image
 docker build -t my-express-app .
 
+# Push the server image to your dockerhub
+- docker login 
+- docker tag my-express-app gbeals1/api-servers:ExpressApi-v1.1
+- docker push gbeals1/api-servers:ExpressApi-v1.1
+
+#### build the express-server for both arm64 and amd64 - this will replace existing images pushed to dockerhub
+docker buildx build --platform linux/amd64,linux/arm64 -t gbeals1/api-servers:ExpressApi-v1.1 --push .
+
 #### Run the container again with the same settings as before
 docker run -d --name my-express-server \
   -p 3000:3000 \
-  --platform linux/amd64 \  
+  --platform linux/amd64 \
   --network minio-net \
   -e PORT=3000 \
   -e NODE_ENV=development \
-  -e ENDPOINT=http://34.135.9.49:9000 \
+  -e ENDPOINT=http://minio1:9000 \
   -e ACCESS_KEY_ID=minioadmin \
   -e SECRET_ACCESS_KEY=minioadmin \
-  gbeals1/api-servers:ExpressApi-v1.0
+  gbeals1/api-servers:ExpressApi-v1.1
+
 
 #### View the logs
 docker logs -f my-express-server

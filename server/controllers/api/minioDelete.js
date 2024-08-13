@@ -1,54 +1,45 @@
 const express = require('express');
 const router = express.Router();
 const { config } = require('dotenv');
-const Minio = require('minio');
+const { s3Client } = require('../../server');
+const { PutObjectCommand, ListBucketsCommand, DeleteObjectCommand, GetObjectLockConfigurationCommand, PutObjectLockConfigurationCommand } = require("@aws-sdk/client-s3");
+
 config({ path: './.env' });
-
-// Configure the MinIO client
-const minioClient = new Minio.Client({
-    endPoint: '34.135.9.49',
-    port: 9000,
-    useSSL: false,
-    accessKey: 'minioadmin',
-    secretKey: 'minioadmin'
-  });
-
-  // removeObjectLock('stjda-signup-forms', '(Corrected)Development Contract.pdf');
 
 // Function to remove the lock from an object
 async function removeObjectLock(bucketName, objectName) {
     try {
         // Get object lock configuration
-        const lockConfig = await minioClient.getObjectLockConfig(bucketName);
+        const getLockCommand = new GetObjectLockConfigurationCommand({ Bucket: bucketName });
+        const lockConfig = await s3Client.send(getLockCommand);
         console.log("Current Lock Configuration:", lockConfig);
-  
+
         // Remove object lock if it exists
-        if (lockConfig && lockConfig.mode) {
-            await minioClient.setObjectLockConfig(bucketName, '');
+        if (lockConfig && lockConfig.ObjectLockConfiguration) {
+            const removeLockCommand = new PutObjectLockConfigurationCommand({
+                Bucket: bucketName,
+                ObjectLockConfiguration: { ObjectLockEnabled: "Disabled" }
+            });
+            await s3Client.send(removeLockCommand);
             console.log(`Lock removed from bucket ${bucketName}`);
         }
-  
-        // Your code to delete the object
-        await minioClient.removeObject(bucketName, objectName);
+
+        // Delete the object
+        await deleteObject(bucketName, objectName);
         console.log(`Object ${objectName} deleted successfully.`);
     } catch (error) {
         console.error("Failed to remove object lock or delete object:", error);
     }
-  }
-  // removeObjectLock('stjda-signup-forms', '(Corrected)Development Contract.pdf');
-  async function listBuckets() {
+}
+
+// Function to delete an object
+async function deleteObject(bucketName, objectName) {
     try {
-      const { Buckets } = await s3Client.send(new ListBucketsCommand({}));
-      console.log('Success', Buckets);
-    } catch (err) {
-      console.error('Error', err);
-    }
-  }
-  
-  async function deleteObject(bucketName, objectName) {
-    try {
-        // Attempt to remove the object
-        await minioClient.removeObject(bucketName, objectName);
+        const command = new DeleteObjectCommand({
+            Bucket: bucketName,
+            Key: objectName
+        });
+        await s3Client.send(command);
         console.log(`Object ${objectName} deleted successfully from ${bucketName}.`);
         return true;
     } catch (error) {
@@ -59,20 +50,21 @@ async function removeObjectLock(bucketName, objectName) {
 
 // deleteObject('stjda-signup-forms', 'Residential Camp, Robotics Camp, Nature Camp:Guy:Beals:0:ted:L:male');
 
-  // 'api/minioG' endpoint
-// gets from the database
+// 'api/minioG' endpoint to delete from the database
 router.delete('/delete/:bucketName/:objectName', async (req, res) => {
-try{
-    const { bucketName, objectName } = req.params;
+    try {
+        const { bucketName, objectName } = req.params;
 
-    // Attempt to delete the object
-    const success = await deleteObject(bucketName, objectName);
-    if (success) {
-        res.status(200).json({ message: "Object deleted successfully." });
-    } 
-}catch(err){
-    res.status(500).json({ error: "Failed to delete object. Please check logs for details." });
-}
+        // Attempt to delete the object
+        const success = await deleteObject(bucketName, objectName);
+        if (success) {
+            res.status(200).json({ message: "Object deleted successfully." });
+        } else {
+            throw new Error("Deletion failed");
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Failed to delete object. Please check logs for details." });
+    }
 });
 
 module.exports = router;
