@@ -80,8 +80,6 @@ export const CampRegistrationPage = () => {
     registrationFormData: {}
   });
 
-  
-
   useEffect(() => {
     console.log('allFormData:', allFormData);
   }, [allFormData]);
@@ -135,6 +133,7 @@ export const CampRegistrationPage = () => {
       setSnackbarOpen(true);
 
       // Open the modal
+      // when the modal opens the data from index DB is sent to the database
       setIsModalOpen(true);
 
       // Throw confetti
@@ -146,8 +145,6 @@ export const CampRegistrationPage = () => {
       
       // Wait for 2.75 seconds
       await new Promise(resolve => setTimeout(resolve, 2750));
-      
-
       setDisableCloseModaleButton(false)
       
     } catch (error) {

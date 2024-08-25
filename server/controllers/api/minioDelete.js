@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { config } = require('dotenv');
-const { s3Client } = require('../../server');
-const { PutObjectCommand, ListBucketsCommand, DeleteObjectCommand, GetObjectLockConfigurationCommand, PutObjectLockConfigurationCommand } = require("@aws-sdk/client-s3");
+const { s3Client } = require('../../s3');
+const { DeleteObjectCommand, GetObjectLockConfigurationCommand, PutObjectLockConfigurationCommand } = require("@aws-sdk/client-s3");
 
 config({ path: './.env' });
 
@@ -34,6 +34,7 @@ async function removeObjectLock(bucketName, objectName) {
 
 // Function to delete an object
 async function deleteObject(bucketName, objectName) {
+    console.log(`Deleting object ${objectName} from ${bucketName}...`);
     try {
         const command = new DeleteObjectCommand({
             Bucket: bucketName,
@@ -50,13 +51,13 @@ async function deleteObject(bucketName, objectName) {
 
 // deleteObject('stjda-signup-forms', 'Residential Camp, Robotics Camp, Nature Camp:Guy:Beals:0:ted:L:male');
 
-// 'api/minioG' endpoint to delete from the database
-router.delete('/delete/:bucketName/:objectName', async (req, res) => {
-    try {
-        const { bucketName, objectName } = req.params;
-
+// 'api/minioG/delete/:bucket/:key' endpoint to delete from the database
+router.delete('/delete/:bucket/:key', async (req, res) => {
+  try {
+    const { bucket, key } = req.params;
+      console.log("delete: ", bucket, key );
         // Attempt to delete the object
-        const success = await deleteObject(bucketName, objectName);
+        const success = await deleteObject(bucket, key);
         if (success) {
             res.status(200).json({ message: "Object deleted successfully." });
         } else {

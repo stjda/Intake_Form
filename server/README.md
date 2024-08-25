@@ -136,18 +136,20 @@ docker stop my-express-server
 docker rm my-express-server
 
 #### Remove the image
-docker rmi my-express-app
+docker rmi my-express-app // run this on your local machine with the server code
+docker images  // remove image from both machines
+docker rmi [IMAGE ID]
 
 #### Rebuild the image
 docker build -t my-express-app .
 
-# Push the server image to your dockerhub
+# Tag and Push the server image to your dockerhub
 - docker login 
-- docker tag my-express-app gbeals1/api-servers:ExpressApi-v1.1
-- docker push gbeals1/api-servers:ExpressApi-v1.1
+docker tag my-express-app gbeals1/api-servers:ExpressApi-v1.5
+docker push gbeals1/api-servers:ExpressApi-v1.5
 
 #### build the express-server for both arm64 and amd64 - this will replace existing images pushed to dockerhub
-docker buildx build --platform linux/amd64,linux/arm64 -t gbeals1/api-servers:ExpressApi-v1.1 --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t gbeals1/api-servers:ExpressApi-v1.5 --push .
 
 #### Run the container again with the same settings as before
 docker run -d --name my-express-server \
@@ -159,11 +161,13 @@ docker run -d --name my-express-server \
   -e ENDPOINT=http://minio1:9000 \
   -e ACCESS_KEY_ID=minioadmin \
   -e SECRET_ACCESS_KEY=minioadmin \
-  gbeals1/api-servers:ExpressApi-v1.1
+  gbeals1/api-servers:ExpressApi-v1.5
 
 
 #### View the logs
 docker logs -f my-express-server
+#### Exec into the container
+docker exec -it my-express-app /bin/bash
 
 
 

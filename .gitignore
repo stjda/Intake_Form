@@ -131,3 +131,27 @@ dist
 
 # google apis .json
 *.googleusercontent.com
+
+npm-debug.log
+.dockerignore
+.git
+.gitignore
+Dockerfile
+README.md
+README.drawio
+
+node_modules
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env

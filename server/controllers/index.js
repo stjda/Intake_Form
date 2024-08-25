@@ -12,7 +12,7 @@ router.use('/minioG', DBGets)
 router.use('/minioD', DBDelete)
 
 router.use((req,res) =>{
-    res.send("❗❗ We missed the router ❗❗")
+    res.send(`${req.url} ❗❗ We missed the router ❗❗Incoming request: ${req.method} `)
 })
 
 module.exports = router;
