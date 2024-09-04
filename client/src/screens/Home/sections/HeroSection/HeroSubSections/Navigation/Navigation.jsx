@@ -35,19 +35,26 @@ export const Navigation = () => {
     };
 
     const styles = {
-      navigation: {
-        alignItems: 'center',
+      navigationWrapper: {
         display: 'flex',
-        justifyContent: 'space-between',
-        marginRight: '-46px',
-        position: 'relative',
-        width: 'auto',
+        justifyContent: 'center',
+        width: '100%',
+      },
+      navigation: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '1200px',
+        maxWidth: '100%',
+        padding: '0 20px',
+        boxSizing: 'border-box',
       },
       companyLogo: {
         alignItems: 'center',
         display: 'flex',
         gap: 'auto',
         position: 'relative',
+        padding: '15px',
       },
       companyLogo2: {
         backgroundImage: 'url(https://c.animaapp.com/I4tqUSkw/img/screenshot-2024-05-23-at-6-18-1@2x.png)',
@@ -64,28 +71,16 @@ export const Navigation = () => {
         width: '599px',
       },
       home: {
-        alignItems: 'center',
-        borderBottomStyle: 'solid',
-        borderBottomWidth: '2px',
-        borderColor: 'var(--black)',
-        display: 'flex',
-        justifyContent: 'center',
+        // alignItems: 'center',
+        // borderBottomStyle: 'solid',
+        // borderBottomWidth: '2px',
+        // borderColor: 'var(--black)',
+        // display: 'flex',
+        // justifyContent: 'center',
         left: '142px',
         padding: '0px 0px 2px',
         position: 'absolute',
         top: '0',
-        width: '55px',
-      },
-      textWrapper4: {
-        color: 'var(--black)',
-        fontFamily: 'var(--heading-5-font-family)',
-        fontSize: 'var(--heading-5-font-size)',
-        fontStyle: 'var(--heading-5-font-style)',
-        fontWeight: 'var(--heading-5-font-weight)',
-        letterSpacing: 'var(--heading-5-letter-spacing)',
-        lineHeight: 'var(--heading-5-line-height)',
-        marginTop: '-2px',
-        position: 'relative',
         width: '55px',
       },
       textWrapper: {
@@ -99,61 +94,91 @@ export const Navigation = () => {
         opacity: 0.5,
         position: 'absolute',
       },
+      buttonContainer: {
+        display: 'flex',
+        gap: '10px',
+      },
       button: {
-        borderRadius: '30%',
+        borderRadius: '50px',
         textTransform: 'none',
       },
       buttonCommon: {
         backgroundColor: '#1479cc',
-        display: 'flex',
         color: 'var(--light-gray)',
-        padding: '2px',
+        padding: '6px 12px',
       },
     };
 
     return (
-      <div style={styles.navigation}>
-        <div style={styles.companyLogo}>
-          <div style={styles.companyLogo2} />
-          <div style={styles.menu}>
-            <div style={styles.home}>
-              <div style={styles.textWrapper4} onMouseEnter={(e) => handleClick(e, "Camps")}>Camps</div>
-              <Menu anchorEl={anchorElCamps} open={Boolean(anchorElCamps)} onClose={handleClose}>
-                <MenuItem onClick={() => goTo('/example-path')}>Camp Application</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Parents Handbook</MenuItem>
-              </Menu>
+      <div style={styles.navigationWrapper}>
+        <div style={styles.navigation}>
+          <div style={styles.companyLogo}>
+            <div style={styles.companyLogo2} />
+            <div style={styles.menu}>
+              <div style={styles.home}>
+                <div 
+                  style={styles.textWrapper} 
+                  onClick={() => window.location.href = 'https://www.stjda.org/camp-freedom-1' } 
+                  onMouseEnter={(e) => handleClick(e, "Camps")}>
+                    Camps
+                  </div>
+                <Menu anchorEl={anchorElCamps} open={Boolean(anchorElCamps)} onClose={handleClose}>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/camp-application' }>Camp Application</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/parents-handbook' }>Parents Handbook</MenuItem>
+                </Menu>
+              </div>
+              <a href="https://www.stjda.org/programs" target="_blank" rel="noopener noreferrer" style={{...styles.textWrapper, left: '59px', top: '1px', width: '70px'}}>Programs</a>
+              <a href="https://www.stjda.org/events" target="_blank" rel="noopener noreferrer" style={{...styles.textWrapper, left: '0', top: '2px', width: '50px'}}>Events</a>
+              <div onMouseLeave={handleClose}>
+              <a href="https://example.com/events" target="_blank" rel="noopener noreferrer" 
+              onClick={() => window.location.href = 'https://www.stjda.org/resources-1' } 
+              style={{...styles.textWrapper, left: '211px', top: '1px', width:  '77px'}} onMouseEnter={(e) => handleClick(e, "Resources")}>Resources</a>
+                <Menu anchorEl={anchorElResources} open={Boolean(anchorElResources)} onClose={handleClose}>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/what-is-diabetes'}>What is Diabetes</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/instructional-videos'}>Instructional Videos</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/inspiring-videos'}>Inspiring Videos</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/halloween-guide'}>Halloween Guide</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/504-plan'}>504 Plan</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/travel-checklist'}>Travel Checklist</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/surviving-the-holidays'}>Surviving the Holidays</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/surviving-the-holidays-copy'}>Sick Days Video</MenuItem>
+                </Menu>
+              </div>
+              <a href="https://www.stjda.org/coalition" target="_blank" rel="noopener noreferrer" style={{...styles.textWrapper, left: '300px', top: '1px', width: '66px'}}>Coalition</a>
+              <a href="https://www.stjda.org/sponsors" target="_blank" rel="noopener noreferrer" style={{...styles.textWrapper, left: '373px', top: '1px', width: '70px'}}>Sponsors</a>
+              <div onMouseLeave={handleClose}>
+              <a href="https://www.stjda.org/our-team-2"
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{...styles.textWrapper, left: '453px', top: '1px', width: '69px'}} 
+                onMouseEnter={(e) => handleClick(e, "About")}>About Us</a>
+                <Menu anchorEl={anchorElAbout} open={Boolean(anchorElAbout)} onClose={handleClose} onMouseLeave={() => handleClose()}>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/mission' }>Mission</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/staff-and-board' }>Staff and Board</MenuItem>
+                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/covid-19-updates' }>Updates for Covid-19</MenuItem>
+                </Menu>
+              </div>
+              <a href="https://www.stjda.org/contact" target="_blank" rel="noopener noreferrer" style={{...styles.textWrapper, left: '524px', top: '1px', width: '61px'}}>Contact</a>
             </div>
-            <div style={{...styles.textWrapper, left: '59px', top: '1px', width: '70px'}}>Programs</div>
-            <div style={{...styles.textWrapper, left: '0', top: '2px', width: '50px'}}>Events</div>
-            <div onMouseLeave={handleClose}>
-              <div style={{...styles.textWrapper, left: '211px', top: '1px', width: '77px'}} onMouseEnter={(e) => handleClick(e, "Resources")}>Resources</div>
-              <Menu anchorEl={anchorElResources} open={Boolean(anchorElResources)} onClose={handleClose}>
-                <MenuItem onClick={() => goTo('/example-path')}>What is Diabetes</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Instructional Videos</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Inspiring Videos</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Halloween Guide</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>504 Plan</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Travel Checklist</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Surviving the Holidays</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Sick Days Video</MenuItem>
-              </Menu>
-            </div>
-            <div style={{...styles.textWrapper, left: '300px', top: '1px', width: '66px'}}>Coalition</div>
-            <div style={{...styles.textWrapper, left: '373px', top: '1px', width: '70px'}}>Sponsors</div>
-            <div onMouseLeave={handleClose}>
-              <div style={{...styles.textWrapper, left: '453px', top: '1px', width: '69px'}} onMouseEnter={(e) => handleClick(e, "About")}>About Us</div>
-              <Menu anchorEl={anchorElAbout} open={Boolean(anchorElAbout)} onClose={handleClose} onMouseLeave={() => handleClose()}>
-                <MenuItem onClick={() => goTo('/example-path')}>Mission</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Staff and Board</MenuItem>
-                <MenuItem onClick={() => goTo('/example-path')}>Updates for Covid-19</MenuItem>
-              </Menu>
-            </div>
-            <div style={{...styles.textWrapper, left: '524px', top: '1px', width: '61px'}}>Contact</div>
+          </div>
+          <div style={styles.buttonContainer}>
+            <MuiButton 
+              style={{...styles.button, ...styles.buttonCommon}} 
+              onClick={() => window.location.href = 'https://www.stjda.org/volunteers' } 
+              variant="contained">Volunteer
+            </MuiButton>
+            <MuiButton 
+              style={{...styles.button, ...styles.buttonCommon}} 
+              onClick={() => window.location.href = 'https://www.stjda.org/donate' } 
+              variant="contained">Donate
+            </MuiButton>
+            <MuiButton 
+              style={{...styles.button, ...styles.buttonCommon}} 
+              onClick={() => window.location.href = 'https://www.stjda.org/boardlogin' } 
+              variant="contained">Board Login
+            </MuiButton>
           </div>
         </div>
-        <MuiButton style={{...styles.button, ...styles.buttonCommon, width: '84px'}} variant="contained">Volunteer</MuiButton>
-        <MuiButton style={{...styles.button, ...styles.buttonCommon, width: '71px'}} variant="contained">Donate</MuiButton>
-        <MuiButton style={{...styles.button, ...styles.buttonCommon, width: '99px'}} variant="contained">Board Login</MuiButton>
       </div>
     );
 };

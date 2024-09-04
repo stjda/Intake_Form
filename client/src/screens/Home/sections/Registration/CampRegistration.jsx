@@ -41,9 +41,8 @@ import { Card } from '../../../../components/Card'
 import { termsAndConditions } from '../../../../assets/templates/terms';
 import { campInfo } from '../../../../assets/templates/camps'
 import { DataSync } from '../../../../util/MinIO/ObjectStorage';
-
-
 import { openDB } from 'idb';
+
 export const DB_NAME = 'STJDA_SignUp';
 export const USER_STORE = 'userSignUps';
 

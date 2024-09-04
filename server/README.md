@@ -161,13 +161,14 @@ docker run -d --name my-express-server \
   -e ENDPOINT=http://minio1:9000 \
   -e ACCESS_KEY_ID=minioadmin \
   -e SECRET_ACCESS_KEY=minioadmin \
+  -e REGION=us-east-1 \
   gbeals1/api-servers:ExpressApi-v1.5
 
 
 #### View the logs
 docker logs -f my-express-server
 #### Exec into the container
-docker exec -it my-express-app /bin/bash
+docker exec -it my-express-app /bin/sh
 
 
 

@@ -22,7 +22,7 @@ export const LandingPage = () => {
       <HeroSection />
       <AboutUsSection />
       <CtaFooterSection />
-   </StyledLandingPage>
+    </StyledLandingPage>
     </>
   );
 };

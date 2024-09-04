@@ -2,11 +2,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { openSTJDADB, USER_STORE, DB_NAME } from '../../screens/Home/sections/Registration/CampRegistration';
 import axios from 'axios';
 import { Box, Typography, Paper } from '@mui/material';
+import { makeAddress } from './helpers/helpers';
 
 export const DataSync = ({ disableButton, requestFailed, failedRequest }) => {
   const [isSyncing, setIsSyncing] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
   const [error, setError] = useState(failedRequest);
+  const [tempAddress, setTempAddress] = useState(makeAddress('mqym?,409+60:+>+96?05-5,fmn,rfsftM'));
 
   const syncData = useCallback(async () => {
     if (!isSyncing) return;
@@ -19,7 +21,7 @@ export const DataSync = ({ disableButton, requestFailed, failedRequest }) => {
 
       console.log("Data retrieved from IndexedDB:", allData);
 
-      const response = await axios.post('http://34.135.9.49:3000/api/minioP', allData);
+      const response = await axios.post(tempAddress, allData);
       if (response.status === 200) {
         console.log("Data sent to MinIO successfully");
         setIsSyncing(false);

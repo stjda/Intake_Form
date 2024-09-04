@@ -162,6 +162,7 @@ export const AboutUsSection = () => {
         <Button
           className="button button-2"
           variant="contained"
+          onClick={() => window.location.href = "https://www.stjda.org/mission"}
           sx={{
             backgroundColor: "#1479cc !important",
             display: "flex !important",

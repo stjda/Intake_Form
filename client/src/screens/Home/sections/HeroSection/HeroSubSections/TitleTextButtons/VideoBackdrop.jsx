@@ -120,6 +120,7 @@ export const TitleTextsButton = () => {
           }}>
             <Button 
               variant="contained" 
+              onClick={() => window.location.href = 'https://www.stjda.org/mission'}
               sx={{ 
                 backgroundColor: '#1479cc',
                 width: { xs: "100%", sm: "auto" },
@@ -129,6 +130,7 @@ export const TitleTextsButton = () => {
             </Button>
             <Button 
               variant="outlined" 
+              onClick={() => window.location.href = 'https://www.stjda.org/donate'}
               sx={{ 
                 borderColor: 'var(--black)', 
                 color: 'var(--black)',
@@ -139,6 +141,7 @@ export const TitleTextsButton = () => {
             </Button>
             <Button 
               variant="outlined" 
+              onClick={() => window.location.href = 'https://www.stjda.org/boardlogin'}
               sx={{ 
                 borderColor: 'var(--white)', 
                 color: 'var(--white)',

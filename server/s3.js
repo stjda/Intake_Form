@@ -9,7 +9,7 @@ config({ path: envPath });
 // MinIO client configuration
 const s3Client = new S3Client({
   endpoint: process.env.ENDPOINT,
-  region: "us-east-1",
+  region: process.env.REGION,
   credentials: {
     accessKeyId: process.env.ACCESS_KEY_ID,
     secretAccessKey: process.env.SECRET_ACCESS_KEY,
