@@ -22,7 +22,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', '*.jpg', '*.png'], // Include all assets to be cached
+      includeAssets: ['favicon.svg', 'robots.txt', '*.jpg', '*.png'],
       manifest: {
         name: 'STJDA Intake',
         short_name: 'STJDA',
@@ -30,36 +30,33 @@ export default defineConfig({
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: 'https://guyycodes.github.io/STJDA_Intake/', // start URL for GitHub Pages
-        id: '/STJDA_Intake/', //  a consistent ID for the app
-        scope: '/STJDA_Intake/', // the scope to restrict what URLs are considered part of the app
+        start_url: '/STJDA_Intake/',
+        id: '/STJDA_Intake/',
+        scope: '/STJDA_Intake/',
         icons: [
-          // Include square icons as required by most devices
           {
-            src: '192x192Icon.png', // path to the icon
+            src: '/STJDA_Intake/192x192Icon.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'any', // Can be used as app icon and shortcut icon
+            purpose: 'any',
           },
-          // More icon sizes can be included here, for example, 512x512
           {
-            src: '512x512Icon.png', // Provide the correct path to the icon
+            src: '/STJDA_Intake/512x512Icon.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any',
           },
         ],
         screenshots: [
-          // Include screenshots to provide a preview during PWA installation
           {
-            src: 'Screenshot1280x720.png', // Path to the desktop screenshot
+            src: '/STJDA_Intake/Screenshot1280x720.png',
             sizes: '1280x720',
             type: 'image/png',
             label: 'Desktop Screenshot',
             form_factor: 'wide',
           },
           {
-            src: 'Screenshot640x1136.png', // Path to the mobile screenshot these sizes must be exact
+            src: '/STJDA_Intake/Screenshot640x1136.png',
             sizes: '640x1136',
             type: 'image/png',
             label: 'Mobile Screenshot',
@@ -67,10 +64,13 @@ export default defineConfig({
           },
         ],
       },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}'],
+      },
     }),
   ],
   build: {
-    outDir: 'dist', // Default output directory
-    base: '/STJDA_Intake/', // Base public path set to match the GitHub repository name
+    outDir: 'dist',
+    base: '/STJDA_Intake/',
   },
 });
