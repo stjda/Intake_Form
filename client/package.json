@@ -13,9 +13,7 @@
     "build": "vite build",
     "deploy": "gh-pages -d dist",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
