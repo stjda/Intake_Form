@@ -34,5 +34,17 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/STJDA/sw.js', { scope: '/STJDA/' })
+            .then(function(registration) {
+              console.log('PWA service worker ready');
+            }, function(err) {
+              console.log('PWA service worker registration failed: ', err);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
