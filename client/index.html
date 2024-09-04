@@ -37,7 +37,7 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/STJDA/sw.js', { scope: '/STJDA_Intake/' })
+          navigator.serviceWorker.register('/STJDA_Intake/sw.js', { scope: '/STJDA_Intake/' })
             .then(function(registration) {
               console.log('PWA service worker ready');
             }, function(err) {
