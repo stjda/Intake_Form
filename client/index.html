@@ -28,7 +28,6 @@
         text-decoration: none;
       }
     </style>
-    <script src="//code.tidio.co/rga2rrmkxpfaskftz7s8povuz2ppveie.js" async></script>
     <link href="styleguide.css" rel="stylesheet" />
   </head>
   <body>
@@ -39,7 +38,7 @@
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/STJDA_Intake/sw.js', { scope: '/STJDA_Intake/' })
             .then(function(registration) {
-              console.log('PWA service worker ready');
+              console.log('PWA service worker ready..');
             }, function(err) {
               console.log('PWA service worker registration failed: ', err);
             });
