@@ -24,15 +24,15 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'robots.txt', '*.jpg', '*.png'], // Include all assets to be cached
       manifest: {
-        name: 'SVG Generator',
-        short_name: 'SVGGen',
-        description: 'Generate SVG paths from Google Fonts',
+        name: 'STJDA Intake',
+        short_name: 'STJDA',
+        description: 'Intake forms process for STJDA',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/FontSVGconverter/', // start URL for GitHub Pages
-        id: '/FontSVGconverter/', //  a consistent ID for the app
-        scope: '/FontSVGconverter/', // the scope to restrict what URLs are considered part of the app
+        start_url: '/STJDA_Intake/', // start URL for GitHub Pages
+        id: '/STJDA_Intake/', //  a consistent ID for the app
+        scope: '/STJDA_Intake/', // the scope to restrict what URLs are considered part of the app
         icons: [
           // Include square icons as required by most devices
           {
@@ -71,6 +71,6 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist', // Default output directory
-    base: '/FontSVGconverter/', // Base public path set to match the GitHub repository name
+    base: '/STJDA_Intake/', // Base public path set to match the GitHub repository name
   },
 });
