@@ -28,7 +28,6 @@ import {
   Modal
 } from '@mui/material';
 import { CheckCircle, XCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import MuiAlert from '@mui/material/Alert';
 import styled from "styled-components";
@@ -42,6 +41,9 @@ import { termsAndConditions } from '../../../../assets/templates/terms';
 import { campInfo } from '../../../../assets/templates/camps'
 import { DataSync } from '../../../../util/MinIO/ObjectStorage';
 import { openDB } from 'idb';
+import { useRouteContext } from '../../../../util/context/routeContext';
+import { HOME } from '../../../../util/actions/actions';
+
 
 export const DB_NAME = 'STJDA_SignUp';
 export const USER_STORE = 'userSignUps';
@@ -60,7 +62,6 @@ const steps = ['Personal Information', 'Camp Selection', 'Review & Submit'];
 
 export const CampRegistrationPage = () => {
 
-  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const [selectedCamps, setSelectedCamps] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -70,6 +71,9 @@ export const CampRegistrationPage = () => {
   const [requestFailed, setRequestFailed] = useState(null);
   const [disableCloseModaleButton, setDisableCloseModaleButton] = useState(true);
   const [syncTime, setSyncTime]=useState('')
+
+  // Accessing the context's dispatch function to update global state its essential to use dispatch from the context or it will only update locally
+  const { dispatch } = useRouteContext();
 
   const [allFormData, setAllFormData] = useState({
     selectedCamps: {},
@@ -82,6 +86,12 @@ export const CampRegistrationPage = () => {
   useEffect(() => {
     console.log('allFormData:', allFormData);
   }, [allFormData]);
+
+  const handleRouting = (clickedText) => {
+    // Dispatch actions for each possible navigation item - setting the state in the global context
+    // Each dispatch checks if the clicked item matches a specific route, and updates the global state accordingly
+    dispatch({ type: HOME, payload: clickedText === 'Home' ? 1 : 0 });
+};
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -158,7 +168,7 @@ export const CampRegistrationPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     // Redirect to home page after closing the modal
-    navigate('/');
+    handleRouting("Home")
   };
 
   const handleCampChange = (event) => {

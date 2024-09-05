@@ -1,28 +1,58 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { LandingPage } from './screens/Home/Landing';
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+// import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 import { CampRegistrationPage } from './screens/Home/sections/Registration/CampRegistration';
-
+import { useRouteContext } from './util/context/routeContext';
 
 
 
 
 function App() {
 
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        {/* to-do finsih responsive styling for mobile/tablets */}
-        <Route path="/" index element={<LandingPage />} />
-        {/* Registration route */}
-        <Route path="/registration" element={<CampRegistrationPage/>} />
-      </>
-      )
-    )
+  const routeContext = useRouteContext();
+  
+  const [currentView, setCurrentView] = useState('/');
+
+  const printElementWithValueOne = (context) => {
+    // Loop through each property in the object
+    for (const key in context) {
+        // Check if the property's value is strictly equal to 1
+        if (context[key] === 1) {
+          if(key === 'home'){
+            setCurrentView(`/`)
+          }else{
+            setCurrentView(`/${key}`)
+          }
+        }
+        console.log(currentView)
+    }
+};
+
+  useEffect(() => {
+
+  // Call the function with your context
+  printElementWithValueOne(routeContext);
+    // setCurrentView(url);
+    console.log("useEffect state: ", routeContext);
+  }, [routeContext]);
+
+  // const router = createBrowserRouter(
+  //   createRoutesFromElements(
+  //     <>
+  //       {/* to-do finsih responsive styling for mobile/tablets */}
+  //       <Route path="/" index element={<LandingPage />} />
+  //       {/* Registration route */}
+  //       <Route path="/registration" element={<CampRegistrationPage/>} />
+  //     </>
+  //     )
+  //   )
 
   return (
     <>
-        <RouterProvider router={router}/> 
+        {/* <RouterProvider router={router}/>  */}
+
+        { currentView === '/' && <LandingPage /> }
+        { currentView === "/registration" && <CampRegistrationPage/> }
     </>
   );
 }

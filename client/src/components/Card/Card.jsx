@@ -76,25 +76,6 @@ const StyledCard = styled.div`
     position: relative;
   }
 
-  // & .progress-bar {
-  //   background-position: 50% 50%;
-  //   background-size: cover;
-  //   border-radius: 50px;
-  //   height: 8px;
-  //   position: relative;
-  //   width: 368px;
-  // }
-
-  // & .amount-reached {
-  //   align-items: flex-end;
-  //   align-self: stretch;
-  //   display: flex;
-  //   flex: 0 0 auto;
-  //   justify-content: space-between;
-  //   position: relative;
-  //   width: 100%;
-  // }
-
   & .div {
     align-items: flex-start;
     display: inline-flex;

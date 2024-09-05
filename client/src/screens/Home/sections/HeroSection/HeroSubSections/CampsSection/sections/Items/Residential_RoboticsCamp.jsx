@@ -2,13 +2,20 @@ import React from "react";
 import { Card } from "../../../../../../../../components/Card";
 import styled from "styled-components";
 import { Button as MuiButton} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { REGISTRATION } from '../../../../../../../../util/actions/actions'
+import { useRouteContext } from "../../../../../../../../util/context/routeContext";
 
 export const Items = () => {
-  const navigate = useNavigate();
+
+  // Accessing the context's dispatch function to update global state its essential to use dispatch from the context or it will only update locally
+  const { dispatch } = useRouteContext();
+
+  const handleRouting = (clickedText) => {
+    dispatch({ type: REGISTRATION, payload: clickedText === 'Registration' ? 1 : 0 });
+  };
 
   const handleNavigate = () => {
-    navigate('/registration');
+    handleRouting('Registration');
   };
 
   return (

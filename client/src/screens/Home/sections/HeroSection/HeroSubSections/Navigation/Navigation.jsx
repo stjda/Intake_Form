@@ -1,15 +1,18 @@
 import React from "react";
 import { Button as MuiButton, Menu, MenuItem } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { REGISTRATION } from '../../../../../../util/actions/actions'
+import { useRouteContext } from "../../../../../../util/context/routeContext";
 
 export const Navigation = () => {
     const [anchorElAbout, setAnchorElAbout] = React.useState(null);
     const [anchorElResources, setAnchorElResources] = React.useState(null);
     const [anchorElCamps, setAnchorElCamps] = React.useState(null);
-    const navigate = useNavigate();
 
-    const goTo = (address) => {
-      navigate(address);
+    // Accessing the context's dispatch function to update global state its essential to use dispatch from the context or it will only update locally
+    const { dispatch } = useRouteContext();
+  
+    const handleRouting = (clickedText) => {
+      dispatch({ type: REGISTRATION, payload: clickedText === 'Registration' ? 1 : 0 });
     };
 
     const handleClick = (event, menuType) => {
@@ -123,7 +126,7 @@ export const Navigation = () => {
                     Camps
                   </div>
                 <Menu anchorEl={anchorElCamps} open={Boolean(anchorElCamps)} onClose={handleClose}>
-                  <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/camp-application' }>Camp Application</MenuItem>
+                  <MenuItem onClick={() => handleRouting('Registration') }>Camp Application</MenuItem>
                   <MenuItem onClick={() => window.location.href = 'https://www.stjda.org/parents-handbook' }>Parents Handbook</MenuItem>
                 </Menu>
               </div>
