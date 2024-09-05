@@ -30,8 +30,8 @@ export default defineConfig({
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
-        //start_url: 'https://guyycodes.github.io/STJDA_Intake/', // start URL for GitHub Pages
-        id: '/STJDA_Intake/', //  a consistent ID for the app
+        start_url: 'https://guyycodes.github.io/STJDA_Intake/', // start URL for GitHub Pages
+        id: 'https://guyycodes.github.io/STJDA_Intake/', //  a consistent ID for the app
         scope: '/STJDA_Intake/', // the scope to restrict what URLs are considered part of the app
         icons: [
           // Include square icons as required by most devices
@@ -72,6 +72,5 @@ export default defineConfig({
   build: {
     outDir: 'dist', // Default output directory
     base: '/STJDA_Intake/', // Base public path set to match the GitHub repository name
-    sourcemap: true, 
   },
 });
