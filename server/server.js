@@ -24,6 +24,15 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://34.135.9.49:3000';
 const DOMAIN = process.env.DOMAIN || '34.135.9.49';  // Add this to your .env file
 const EMAIL = process.env.EMAIL; // Add this to your .env file
 
+// Middleware for logging request origins
+app.use((req, res, next) => {
+  const origin = req.get('origin') || req.get('host');
+  const protocol = req.protocol;
+  const port = req.socket.localPort;
+  console.log(`Incoming request from: ${protocol}://${origin} to port ${port}`);
+  next();
+});
+
 // increase the body parser size limit
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));

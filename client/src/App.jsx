@@ -24,16 +24,12 @@ function App() {
             setCurrentView(`/${key}`)
           }
         }
-        console.log(currentView)
     }
 };
 
   useEffect(() => {
-
   // Call the function with your context
   printElementWithValueOne(routeContext);
-    // setCurrentView(url);
-    console.log("useEffect state: ", routeContext);
   }, [routeContext]);
 
   // const router = createBrowserRouter(

@@ -35,8 +35,8 @@ function scrambleAddress(address, forwards = true, backwards = false) {
 }
 
 // Example usage:
-// const originalAddress = "http://34.135.9.49:3000/api/minioP";
-
+const originalAddress = "http://34.135.9.49:3000/api/minioP";
+// mqym?,409+60:+>+96?05-5,fmn,rfsftM
 // // Scramble the address
 // const scrambled = scrambleAddress(originalAddress, true);
 // console.log("Scrambled:", scrambled);
@@ -46,4 +46,4 @@ const unscrambled = scrambleAddress('mqym?,409+60:+>+96?05-5,fmn,rfsftM', false,
 console.log("Unscrambled:", unscrambled);
 
 // Verify if the unscrambled address matches the original
-// console.log("Matches original:", unscrambled === originalAddress);
+console.log("Matches original:", unscrambled === originalAddress);
