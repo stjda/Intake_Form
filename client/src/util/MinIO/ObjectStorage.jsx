@@ -8,7 +8,7 @@ export const DataSync = ({ disableButton, requestFailed, failedRequest }) => {
   const [isSyncing, setIsSyncing] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
   const [error, setError] = useState(failedRequest);
-  const [tempAddress, setTempAddress] = useState(makeAddress('mqym?,409+60:+>+96?05-5,fmn,rfsftM'));
+  const [tempAddress, setTempAddress] = useState(makeAddress(''));
 
   const syncData = useCallback(async () => {
     if (!isSyncing) return;
@@ -21,7 +21,13 @@ export const DataSync = ({ disableButton, requestFailed, failedRequest }) => {
 
       console.log("Data retrieved from IndexedDB:", allData);
 
-      const response = await axios.post(tempAddress, allData);
+      const response = await axios.post(tempAddress, allData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
       if (response.status === 200) {
         console.log("Data sent to MinIO successfully");
         setIsSyncing(false);
@@ -31,20 +37,21 @@ export const DataSync = ({ disableButton, requestFailed, failedRequest }) => {
         requestFailed(true);
         throw new Error("Failed to send data to MinIO");
       }
-      // clear indexDB for STJDA_SignUp
-      const deleteRequest = indexedDB.deleteDatabase(DB_NAME)
-      deleteRequest.onerror = function() {
-        console.error("Error removing data.");
-      };
 
     } catch (error) {
       console.error("Error syncing data:", error);
       requestFailed(true);
       setRetryCount(prevCount => prevCount + 1);
-      if (retryCount >= 4) {  // 5 attempts total (initial + 4 retries)
+      if (retryCount >= 3) {  // 4 attempts total (initial + 3 retries)
         setIsSyncing(false);
         console.error("Max retry attempts reached");
       }
+    } finally {
+      // clear indexDB for STJDA_SignUp
+      const deleteRequest = indexedDB.deleteDatabase(DB_NAME)
+      deleteRequest.onerror = function() {
+        console.error("Error removing data.");
+      };
     }
   }, [isSyncing, retryCount, disableButton]);
 
