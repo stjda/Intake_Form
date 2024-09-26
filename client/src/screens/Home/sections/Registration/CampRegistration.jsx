@@ -32,18 +32,11 @@ import confetti from 'canvas-confetti';
 import MuiAlert from '@mui/material/Alert';
 import styled from "styled-components";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { CtaFooterSection } from '../CtaFooterSection';
-import { Navigation } from '../HeroSection/HeroSubSections/Navigation';
-import { TitleTextsButton } from '../HeroSection/HeroSubSections/TitleTextButtons';
 import { CampRegistrationAccordion } from '../../sections/HeroSection/HeroSubSections/SignUpForm/index';
-import { Card } from '../../../../components/Card'
 import { termsAndConditions } from '../../../../assets/templates/terms';
 import { campInfo } from '../../../../assets/templates/camps'
 import { DataSync } from '../../../../util/MinIO/ObjectStorage';
 import { openDB } from 'idb';
-import { useRouteContext } from '../../../../util/context/routeContext';
-import { HOME } from '../../../../util/actions/actions';
-
 
 export const DB_NAME = 'STJDA_SignUp';
 export const USER_STORE = 'userSignUps';
@@ -70,10 +63,9 @@ export const CampRegistrationPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [requestFailed, setRequestFailed] = useState(null);
   const [disableCloseModaleButton, setDisableCloseModaleButton] = useState(true);
+  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [syncTime, setSyncTime]=useState('')
 
-  // Accessing the context's dispatch function to update global state its essential to use dispatch from the context or it will only update locally
-  const { dispatch } = useRouteContext();
 
   const [allFormData, setAllFormData] = useState({
     selectedCamps: {},
@@ -87,11 +79,6 @@ export const CampRegistrationPage = () => {
     console.log('allFormData:', allFormData);
   }, [allFormData]);
 
-  const handleRouting = (clickedText) => {
-    // Dispatch actions for each possible navigation item - setting the state in the global context
-    // Each dispatch checks if the clicked item matches a specific route, and updates the global state accordingly
-    dispatch({ type: HOME, payload: clickedText === 'Home' ? 1 : 0 });
-};
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -99,6 +86,10 @@ export const CampRegistrationPage = () => {
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleAccordionChange = (event, expanded) => {
+    setIsAccordionOpen(expanded);
   };
 
   const handleReset = () => {
@@ -168,7 +159,6 @@ export const CampRegistrationPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     // Redirect to home page after closing the modal
-    handleRouting("Home")
   };
 
   const handleCampChange = (event) => {
@@ -202,7 +192,7 @@ export const CampRegistrationPage = () => {
 
   return (
     <>
-        <Box sx={{  
+        <Box sx={{
           alignItems: "flex-start",
           alignSelf: "stretch",
           display: "flex",
@@ -211,73 +201,40 @@ export const CampRegistrationPage = () => {
           justifyContent: 'flex-end',
           padding: "0px 10px",
           position: "relative",
-          width: "100%"  
+          width: "100%"
       }}>
-      <Navigation />
-      <TitleTextsButton />
+     
+      <Box sx={{
+          alignItems: "flex-start",
+          alignSelf: "stretch",
+          justifyContent: 'flex-end',
+          padding: "10px",
+          position: "relative",
+          width: "100%"
+      }}>
+        <Typography variant="h4" component="h1" gutterBottom align="center">
+          STJDA Summer Camp Registration
+        </Typography>
+      </Box>
     </Box>
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 4, mt: 4, mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Summer Camp Registration
-        </Typography>
-
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            Learn More About Our Camps
-          </Typography>
-    <StyledItemsWrapper className="items-wrapper">
-      <Card
-        className="card"
-        hasAmountReached={false}
-        hasProgressBar={false}
-        photoClassName="photo science-camp"
-        property1="ver-1"
-        text="Empowerment Through Education at Camp"
-        text1="Through interactive, supportive, and fun learning experiences, we help each camper to understand their condition, and achieve their goals."
-        textClassName="text-content"
-      />
-      <Card
-        className="card"
-        hasAmountReached={false}
-        hasProgressBar={false}
-        photoClassName="photo nature-camp"
-        property1="ver-1"
-        text="Be Part of Something Bigger"
-        text1="We ensure that no child is left behind because of Join us in this crucial mission—because every child deserves the right to a healthy future."
-        textClassName="text-content"
-      />
-
-    <Card
-
-        className="card"
-        hasAmountReached={false}
-        hasProgressBar={false}
-        photoClassName="photo residential-camp"
-        property1="ver-1"
-        text="A Summer Experience Where Every Child Thrives"
-        text1="Our mission is focused on breaking down barriers to diabetes management education for children, empowering youth with knowledge is the key."
-        textClassName="text-content"
-      />
-      <Card
-        className="card"
-        hasAmountReached={false}
-        hasProgressBar={false}
-        photoClassName="photo robotics-camp"
-        property1="ver-1"
-        text="Empowering Youth through Education for All"
-        text1="By equipping children and their families with essential skills and knowledge, we're not just managing diabetes—we're transforming lives."
-        textClassName="text-content"
-      />
-    </StyledItemsWrapper>
-        </Box>
-        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+        <Paper 
+          elevation={3} 
+          sx={{ 
+            p: 4, 
+            mt: 4, 
+            mb: 4, 
+            backgroundColor: '#f5f5f5',  // Light grey background for the Paper
+          }}
+        >
+      <Box sx={{ backgroundColor: '#ffffff', p: 3, borderRadius: 2 }}>  {/* White background for the form */}
+            <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
 
         {activeStep === steps.length ? (
           <Box>
@@ -296,7 +253,8 @@ export const CampRegistrationPage = () => {
                 <Typography variant="h6" gutterBottom>
                   Please fill out your personal information.
                 </Typography>
-                <CampRegistrationAccordion onFormDataChange={(data) => setAllFormData(prev => ({ ...prev, registrationFormData: data }))}/>
+                <CampRegistrationAccordion 
+                onFormDataChange={(data) => setAllFormData(prev => ({ ...prev, registrationFormData: data }))}/>
               </Box>
             )}
             {activeStep === 1 && (
@@ -364,7 +322,6 @@ export const CampRegistrationPage = () => {
                     </Alert>
                   )}
                 </Grid>
-
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
@@ -383,7 +340,7 @@ export const CampRegistrationPage = () => {
                     className="mb-4"
                   />
                   <Box 
-             
+
                     sx={{
                       height: '200px',
                       overflowY: 'auto',
@@ -466,9 +423,11 @@ export const CampRegistrationPage = () => {
             </Box>
           </Box>
         )}
-      </Paper>
-    </Container>
-    <CtaFooterSection/>
+          </Box>
+        </Paper>
+      </Container>
+
+
     <Backdrop
       sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
       open={isLoading}

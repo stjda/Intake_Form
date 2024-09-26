@@ -8,8 +8,9 @@ export const DataSync = ({ disableButton, requestFailed, failedRequest }) => {
   const [isSyncing, setIsSyncing] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
   const [error, setError] = useState(failedRequest);
-  const [tempAddress, setTempAddress] = useState(makeAddress(''));
-
+  const [tempAddress, setTempAddress] = useState(makeAddress('mqymx74,813.8/3.>-3/95?05-5,fmn,rfsftM'));
+// https
+// mqymx74,8131;+863/94?05-5,fmn,rfsftM
   const syncData = useCallback(async () => {
     if (!isSyncing) return;
 

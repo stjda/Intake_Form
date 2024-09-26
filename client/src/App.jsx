@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { LandingPage } from './screens/Home/Landing';
+// import { LandingPage } from './screens/Home/Landing';
 // import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 import { CampRegistrationPage } from './screens/Home/sections/Registration/CampRegistration';
 import { useRouteContext } from './util/context/routeContext';
@@ -47,8 +47,8 @@ function App() {
     <>
         {/* <RouterProvider router={router}/>  */}
 
-        { currentView === '/' && <LandingPage /> }
-        { currentView === "/registration" && <CampRegistrationPage/> }
+        { currentView === '/' && <CampRegistrationPage/>}
+        {/* { currentView === "/registration" && <CampRegistrationPage/> } */}
     </>
   );
 }
