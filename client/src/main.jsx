@@ -36,7 +36,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <MuiThemeProvider theme={muiTheme}>
       <RouteContextProvider>
-        <CssBaseline /> {/* Normalize the CSS and add global styles */}
+        {/* <CssBaseline />  */}
         <App />
       </RouteContextProvider>
     </MuiThemeProvider>

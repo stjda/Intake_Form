@@ -2,26 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { 
   TextField, Button, Stepper, Step, StepLabel, FormControl, 
   InputLabel, Select, MenuItem, FormControlLabel, Checkbox,
-  Typography, Box, FormHelperText
+  Typography, Box, FormHelperText, useTheme, useMediaQuery
 } from '@mui/material';
 import { formQuestions } from '../../../../../../../assets/templates/formQuestions';
 
-export const RegistrationForm = ( {onFormDataChange, closeAccordion} ) => {
+export const RegistrationForm = ({ onFormDataChange, closeAccordion }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({});
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  useEffect(() => {
+    onFormDataChange(formData);
+  }, [formData, onFormDataChange]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  useEffect(() => {
-// console.log('Form Data:', formData);
-    onFormDataChange(formData);
-  }, [formData]);
-
   const handleSubmit = () => {
-    // Handle form submission logic here
-    // console.log('Form data:', formData);
     console.log('closeAccordion called');
     console.log('formData:', formData);
     onFormDataChange(formData);
@@ -52,12 +51,12 @@ export const RegistrationForm = ( {onFormDataChange, closeAccordion} ) => {
             fullWidth
             margin="normal"
             name={field.name}
-            // label={field.label}
             helperText={field.label}
             type={field.type}
             InputLabelProps={field.type === 'date' ? { shrink: true } : {}}
             onChange={handleInputChange}
             value={formData[field.name] || ''}
+            size={isMobile ? "small" : "medium"}
           />
         );
       case 'textarea':
@@ -69,34 +68,34 @@ export const RegistrationForm = ( {onFormDataChange, closeAccordion} ) => {
             name={field.name}
             label={field.label}
             multiline
-            rows={4}
+            rows={isMobile ? 3 : 4}
             onChange={handleInputChange}
             value={formData[field.name] || ''}
+            size={isMobile ? "small" : "medium"}
           />
         );
       case 'select':
         return (
-   <FormControl key={field.name} fullWidth margin="normal">
-  <Select
-    name={field.name}
-    multiple={field.multiple}
-    onChange={handleInputChange}
-    value={formData[field.name] || (field.multiple ? [] : '')}
-  >
-    {field.options.map((option) => (
-      <MenuItem key={option.value} value={option.value}>
-        {option.label}
-      </MenuItem>
-    ))}
-  </Select>
-  {/* Add this line for helper text */}
-  <FormHelperText>{field.label}</FormHelperText>
-</FormControl>
+          <FormControl key={field.name} fullWidth margin="normal" size={isMobile ? "small" : "medium"}>
+            <Select
+              name={field.name}
+              multiple={field.multiple}
+              onChange={handleInputChange}
+              value={formData[field.name] || (field.multiple ? [] : '')}
+            >
+              {field.options.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>{field.label}</FormHelperText>
+          </FormControl>
         );
       case 'checkbox':
         return (
-          <Box key={field.name}>
-            <Typography variant="subtitle1">{field.label}</Typography>
+          <Box key={field.name} sx={{ mt: 2, mb: 2 }}>
+            <Typography variant="subtitle2">{field.label}</Typography>
             {field.options.map((option) => (
               <FormControlLabel
                 key={option.value}
@@ -105,9 +104,10 @@ export const RegistrationForm = ( {onFormDataChange, closeAccordion} ) => {
                     name={`${field.name}.${option.value}`}
                     onChange={handleInputChange}
                     checked={formData[`${field.name}.${option.value}`] || false}
+                    size={isMobile ? "small" : "medium"}
                   />
                 }
-                label={option.label}
+                label={<Typography variant={isMobile ? "body2" : "body1"}>{option.label}</Typography>}
               />
             ))}
           </Box>
@@ -120,38 +120,53 @@ export const RegistrationForm = ( {onFormDataChange, closeAccordion} ) => {
   const renderStep = (step) => {
     const section = formQuestions[step];
     return (
-      <>
-        <Typography variant="h6">{section.section}</Typography>
+      <Box sx={{ mt: isMobile ? 1 : 2, mb: isMobile ? 1 : 2 }}>
+        <Typography variant={isMobile ? "h6" : "h5"} sx={{ mb: isMobile ? 1 : 2 }}>{section.section}</Typography>
         {section.fields.map((field) => renderField(field))}
-      </>
+      </Box>
     );
   };
 
   return (
-    <Box sx={{ width: '100%', maxWidth: 600, margin: 'auto', padding: 2 }}>
-      <Typography variant="h4" align="center" gutterBottom>
+    <Box sx={{ 
+      width: '100%', 
+      maxWidth: isMobile ? '100%' : 600, 
+      margin: 'auto', 
+      padding: isMobile ? 1 : 2 
+    }}>
+      <Typography variant={isMobile ? "h5" : "h4"} align="center" gutterBottom>
         Register Here
       </Typography>
-      <Stepper activeStep={activeStep}>
+      <Stepper 
+        activeStep={activeStep} 
+        orientation={isMobile ? "vertical" : "horizontal"}
+        sx={{ mb: isMobile ? 1 : 2 }}
+      >
         {formQuestions.map((section, index) => (
           <Step key={section.section}>
-            <StepLabel>{section.section}</StepLabel>
+            <StepLabel>
+              <Typography variant={isMobile ? "body2" : "body1"}>{section.section}</Typography>
+            </StepLabel>
           </Step>
         ))}
       </Stepper>
-      <Box sx={{ mt: 2 }}>
+      <Box sx={{ mt: isMobile ? 1 : 2 }}>
         {renderStep(activeStep)}
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', pt: isMobile ? 1 : 2 }}>
           <Button
             color="inherit"
             disabled={activeStep === 0}
             onClick={handleBack}
             sx={{ mr: 1 }}
+            size={isMobile ? "small" : "medium"}
           >
             Back
           </Button>
           <Box sx={{ flex: '1 1 auto' }} />
-          <Button onClick={activeStep === formQuestions.length - 1 ? () => handleSubmit() : handleNext}>
+          <Button 
+            onClick={activeStep === formQuestions.length - 1 ? handleSubmit : handleNext}
+            size={isMobile ? "small" : "medium"}
+          >
             {activeStep === formQuestions.length - 1 ? 'Continue' : 'Next'}
           </Button>
         </Box>

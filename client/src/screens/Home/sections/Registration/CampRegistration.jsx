@@ -4,10 +4,12 @@ import {
   Typography,
   Paper,
   Box,
-  Button,
   Stepper,
   Step,
   StepLabel,
+  useMediaQuery,
+  useTheme,
+  Button,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -20,10 +22,10 @@ import {
   TextField,
   List,
   ListItem,
-  ListItemText, 
+  ListItemText,
   Alert,
   Snackbar,
-  CircularProgress, 
+  CircularProgress,
   Backdrop,
   Modal
 } from '@mui/material';
@@ -56,6 +58,8 @@ const steps = ['Personal Information', 'Camp Selection', 'Review & Submit'];
 export const CampRegistrationPage = () => {
 
   const [activeStep, setActiveStep] = useState(0);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedCamps, setSelectedCamps] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -63,8 +67,8 @@ export const CampRegistrationPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [requestFailed, setRequestFailed] = useState(null);
   const [disableCloseModaleButton, setDisableCloseModaleButton] = useState(true);
-  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
-  const [syncTime, setSyncTime]=useState('')
+  const [isAccordionOpen, setIsAccordionOpen] = useState(true);  // Set initial state as open
+
 
 
   const [allFormData, setAllFormData] = useState({
@@ -192,49 +196,37 @@ export const CampRegistrationPage = () => {
 
   return (
     <>
-        <Box sx={{
-          alignItems: "flex-start",
-          alignSelf: "stretch",
-          display: "flex",
-          flex: '0 0 auto',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          padding: "0px 10px",
-          position: "relative",
-          width: "100%"
-      }}>
-     
       <Box sx={{
-          alignItems: "flex-start",
-          alignSelf: "stretch",
-          justifyContent: 'flex-end',
-          padding: "10px",
-          position: "relative",
-          width: "100%"
+        alignItems: "flex-start",
+        alignSelf: "stretch",
+        display: "flex",
+        flexDirection: 'column',
+        padding: "0px 10px",
+        width: "100%"
       }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          STJDA Summer Camp Registration
-        </Typography>
+        <Box sx={{
+          padding: "10px",
+          width: "100%"
+        }}>
+          <Typography variant="h4" component="h1" gutterBottom align="center">
+            STJDA Summer Camp Registration
+          </Typography>
+        </Box>
       </Box>
-    </Box>
-    <Container maxWidth="md">
-        <Paper 
-          elevation={3} 
-          sx={{ 
-            p: 4, 
-            mt: 4, 
-            mb: 4, 
-            backgroundColor: '#f5f5f5',  // Light grey background for the Paper
-          }}
+
+      <Box sx={{ backgroundColor: '#ffffff', p: 3, borderRadius: 2 }}>
+        <Stepper 
+          activeStep={activeStep} 
+          sx={{ mb: 4 }}
+          orientation={isMobile ? "vertical" : "horizontal"}
+          alternativeLabel={!isMobile}
         >
-      <Box sx={{ backgroundColor: '#ffffff', p: 3, borderRadius: 2 }}>  {/* White background for the form */}
-            <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{isMobile ? label : <Typography variant="body2">{label}</Typography>}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
         {activeStep === steps.length ? (
           <Box>
@@ -248,13 +240,24 @@ export const CampRegistrationPage = () => {
           </Box>
         ) : (
           <Box>
-            {activeStep === 0 && (
+           {activeStep === 0 && (
               <Box>
                 <Typography variant="h6" gutterBottom>
                   Please fill out your personal information.
                 </Typography>
-                <CampRegistrationAccordion 
-                onFormDataChange={(data) => setAllFormData(prev => ({ ...prev, registrationFormData: data }))}/>
+                <Accordion 
+                  expanded={isAccordionOpen} 
+                  onChange={handleAccordionChange}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography>Personal Information</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <CampRegistrationAccordion 
+                      onFormDataChange={(data) => setAllFormData(prev => ({ ...prev, registrationFormData: data }))}
+                    />
+                  </AccordionDetails>
+                </Accordion>
               </Box>
             )}
             {activeStep === 1 && (
@@ -424,8 +427,7 @@ export const CampRegistrationPage = () => {
           </Box>
         )}
           </Box>
-        </Paper>
-      </Container>
+
 
 
     <Backdrop
