@@ -137,8 +137,9 @@ npm-debug.log
 .git
 .gitignore
 Dockerfile
-README.md
+docker-compose.yaml
 README.drawio
+babel.config.js
 
 node_modules
 dist-ssr
