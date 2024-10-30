@@ -4,6 +4,15 @@
 
 This document outlines the architecture of a smaller, specialized service designed to integrate with a custom intake form hosted on GitHub Pages. This service manages form submissions and associated data storage, ensuring HIPAA compliance and data integrity. And is a MicroServie to the primary STJDA Web app.
 
+## Technologies Used
+
+- **Frontend**: React.js for dynamic UI elements on the custom intake form.
+- **Backend**: Node.js with Express framework, ensuring efficient handling of API requests and server-side logic.
+- **Encryption and Security**: ZeroSSL for HTTPS encryption on web communication, ensuring secure data transfer.
+- **Data Storage**: Minio object storage for handling form uploads and data storage, encrypted to ensure HIPAA compliance.
+- **Server Configuration**: An automated setup running on an overlay network consisting of 3 servers - 2 HTTPS and 1 HTTP - to manage the secure flow and processing of data.
+- **SMTP through fastmail guymorganb@levelupco.com** For automated server messaging to ensure server health, the server in both services email the project owner every 12 hours of its status, ensuring the overseerer is able to know if any issues arise.
+
 ## Components and Configuration
 
 ### Intake Form
@@ -35,4 +44,4 @@ This document outlines the architecture of a smaller, specialized service design
 
 ## Summary
 
-This smaller service provides critical functionality to the overarching architecture of the summer camp management application by managing secure and compliant data intake and storage. The use of HTTPS, TLS encryption, and HIPAA-compliant data handling practices ensures that the service maintains high standards of security and data integrity. This documentation should guide further development and maintenance efforts, ensuring the continuity and scalability of this specialized service.
+This smaller service provides critical functionality to the overarching architecture of the summer camp management application by managing secure and compliant data intake and storage. The integration of React.js, Node.js with Express, Minio, and secure server configurations, alongside the use of HTTPS and TLS encryption, ensures that the service maintains high standards of security and data integrity. This documentation should guide further development and maintenance efforts, ensuring the continuity and scalability of this specialized service.
